@@ -27,11 +27,11 @@ class SolutionTest {
     companion object {
         @JvmStatic
         fun testData(): List<Arguments> = listOf(
-            Arguments.of(intArrayOf(1, 2, 3, 4), intArrayOf(24, 12, 8, 6)),
+            Arguments.of(intArrayOf(1, 2, 3, 4, 5, 6, 7, 8, 9, 10), intArrayOf(3628800, 1814400, 1209600, 907200, 725760, 604800, 518400, 453600, 403200, 362880)),
             Arguments.of(intArrayOf(1, 2, 3, 4, 0), intArrayOf(0, 0, 0, 0, 24)),
             Arguments.of(intArrayOf(1, 2, 3, 4, 0, 0), intArrayOf(0, 0, 0, 0, 0, 0)),
-            Arguments.of(intArrayOf(), intArrayOf()),
-            )
+            Arguments.of(intArrayOf(1), intArrayOf(1)),
+        )
     }
 
 }

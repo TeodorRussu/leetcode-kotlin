@@ -2,32 +2,57 @@ package product_of_array_except_self
 
 class Solution {
     fun productExceptSelf(nums: IntArray): IntArray {
-        var totalProduct = 1
-        var totalProductWithoutZero = 1
-        val outputArray = IntArray(nums.size)
+        if (nums.size <= 1) return nums
+        var outputArray = IntArray(nums.size)
+        val segmentSize = determineSegmentSize(nums)
+        val segmentsProducts = mutableMapOf<Int, Int>()
+        for (i in nums.indices) {
+            val currentNum = nums[i]
+            val segmentHash = i / segmentSize
+            if (segmentsProducts[segmentHash] == null) {
+                segmentsProducts[segmentHash] = 1
+            }
+            segmentsProducts[segmentHash] = segmentsProducts[segmentHash]!! * nums[i]
+        }
 
-        var zeroOccurences = 0
+        for (i in nums.indices step segmentSize) {
 
-        for (num in nums) {
-            totalProduct *= num
-            if (num == 0) {
-                zeroOccurences++
-                if (zeroOccurences > 1) { // that means the input contains multiple zero values, and the total product will always be zero
-                    totalProduct = 0
-                    totalProductWithoutZero = 0
-                    break
+            val currentSegmentHash = i / segmentSize
+            var otherSegmentsProduct = 1
+            segmentsProducts.forEach { (key, value) ->
+                if (key != currentSegmentHash) {
+                    otherSegmentsProduct *= value
                 }
-                continue
             }
-            totalProductWithoutZero *= num
+            for (j in 0..<segmentSize) {
+                val currentSegmentStartindex = i
+                var currentSegmentEndindex = i + segmentSize - 1
+                if (currentSegmentEndindex > nums.lastIndex)
+                    currentSegmentEndindex = nums.lastIndex
+
+                val currentNumberIndex = i + j
+                var currentSegmentProductWithoutCurrentNumber = 1
+                for (k in currentSegmentStartindex..currentSegmentEndindex) {
+                    if (k != currentNumberIndex) {
+                        currentSegmentProductWithoutCurrentNumber *= nums[k]
+                    }
+                }
+                outputArray[currentNumberIndex] = currentSegmentProductWithoutCurrentNumber * otherSegmentsProduct
+
+                if (currentNumberIndex == nums.lastIndex)
+                    break
+                print(currentSegmentProductWithoutCurrentNumber * otherSegmentsProduct)
+            }
         }
 
-        for (index in nums.indices) {
-            when (nums[index]) {
-                0 -> outputArray[index] = totalProductWithoutZero
-                else -> outputArray[index] = totalProduct / nums[index]
-            }
-        }
         return outputArray
     }
+
+    private fun determineSegmentSize(nums: IntArray): Int {
+        val inputSize = nums.size
+        if (inputSize <= 5)
+            return inputSize
+        return inputSize / 5
+    }
+
 }
