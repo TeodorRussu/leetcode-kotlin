@@ -1,58 +1,31 @@
 package product_of_array_except_self
 
 class Solution {
+    /*
+        Explanation:
+        Left to Right Traverse : Create the output array by iterating through the nums array, and filling each output[i]
+        with the product of all elements to the left of i.
+        Right to Left Traverse: We then iterate the array from right to left,
+        updating the output[i] by multiplying the existing output[i] value with the product of all elements to the right of i.
+       */
     fun productExceptSelf(nums: IntArray): IntArray {
-        if (nums.size <= 1) return nums
-        var outputArray = IntArray(nums.size)
-        val segmentSize = determineSegmentSize(nums)
-        val segmentsProducts = mutableMapOf<Int, Int>()
-        for (i in nums.indices) {
-            val currentNum = nums[i]
-            val segmentHash = i / segmentSize
-            if (segmentsProducts[segmentHash] == null) {
-                segmentsProducts[segmentHash] = 1
-            }
-            segmentsProducts[segmentHash] = segmentsProducts[segmentHash]!! * nums[i]
+        val output = IntArray(nums.size)
+        val reverseOutput = IntArray(nums.size)
+
+        var leftProduct = 1
+        for (i in 0..nums.lastIndex) {
+            output[i] = leftProduct
+            leftProduct *= nums[i]
         }
 
-        for (i in nums.indices step segmentSize) {
-
-            val currentSegmentHash = i / segmentSize
-            var otherSegmentsProduct = 1
-            segmentsProducts.forEach { (key, value) ->
-                if (key != currentSegmentHash) {
-                    otherSegmentsProduct *= value
-                }
-            }
-            for (j in 0..<segmentSize) {
-                val currentSegmentStartindex = i
-                var currentSegmentEndindex = i + segmentSize - 1
-                if (currentSegmentEndindex > nums.lastIndex)
-                    currentSegmentEndindex = nums.lastIndex
-
-                val currentNumberIndex = i + j
-                var currentSegmentProductWithoutCurrentNumber = 1
-                for (k in currentSegmentStartindex..currentSegmentEndindex) {
-                    if (k != currentNumberIndex) {
-                        currentSegmentProductWithoutCurrentNumber *= nums[k]
-                    }
-                }
-                outputArray[currentNumberIndex] = currentSegmentProductWithoutCurrentNumber * otherSegmentsProduct
-
-                if (currentNumberIndex == nums.lastIndex)
-                    break
-                print(currentSegmentProductWithoutCurrentNumber * otherSegmentsProduct)
-            }
+        var rightProduct = 1
+        for (i in nums.lastIndex downTo 0) {
+            output[i] *= rightProduct
+            rightProduct *= nums[i]
         }
 
-        return outputArray
-    }
 
-    private fun determineSegmentSize(nums: IntArray): Int {
-        val inputSize = nums.size
-        if (inputSize <= 5)
-            return inputSize
-        return inputSize / 5
+        return output
     }
 
 }
