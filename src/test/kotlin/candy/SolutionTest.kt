@@ -34,6 +34,7 @@ class SolutionTest {
                 Arguments.of(intArrayOf(), 0),
                 Arguments.of(intArrayOf(1, 3, 2, 2, 1), 7),
                 Arguments.of(intArrayOf(1,2,87,87,87,2,1), 13),
+                Arguments.of(intArrayOf(1,6,10,8,7,3,2), 18),
             )
         }
     }
